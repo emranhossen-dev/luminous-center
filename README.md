@@ -14,17 +14,16 @@ A Next.js + Tailwind CSS website for recording and managing enrolled students ac
 
 ## Project Structure
 
-- **Navbar**: Logo (left), menu items in center (Home, Courses, About, Blog, Contact), Login/Signup (right). Hover and active link styles.
+- **Navbar**: Logo (left), menu in center (Home, Courses, About, Blog, Contact, **My Classes** when logged in), Login/Signup or user name + Logout (right).
 - **Footer**: Copyright (left), same menu (center), social links (right).
 - **Routes**:
-  - `/` – Homepage (hero, stats, why us, popular courses, testimonials placeholder)
-  - `/courses` – All courses with search and project filter (All, Govt Project, Paid Batch, Online Batch), pagination
-  - `/courses/[slug]` – Course detail page
-  - `/about` – About (story, mission/vision, values, team, gallery, CTA)
-  - `/blog` – Blog listing (placeholder)
-  - `/contact` – Contact form and address/phone/email
-  - `/login` – Login (email, password, show/hide password, forgot link)
-  - `/signup` – Signup (name, email, password, confirm, terms checkbox)
+  - `/` – Homepage
+  - `/courses` – All courses (search, filter by project, pagination)
+  - `/courses/[slug]` – Course detail; **Enroll** redirects to login if not logged in, then to enroll flow
+  - `/courses/[slug]/enroll` – **Enrollment**: Govt project → registration form; Paid/Online batch → SSLCommerz payment → then access in My Classes
+  - `/my-classes` – Logged-in only; lists enrolled courses (after govt registration or successful payment)
+  - `/payment/success`, `/payment/fail`, `/payment/cancel` – SSLCommerz redirects after payment
+  - `/about`, `/blog`, `/contact`, `/login`, `/signup`
 
 ## Getting Started
 
@@ -49,4 +48,18 @@ npm start
 
 ## Course Data
 
-Course list is generated in `app/data/courses.ts`: 3 projects × 3 courses = 9 courses. Adjust project names and course titles there as needed.
+Course list is in `app/data/courses.ts`: 3 projects × 3 courses = 9 courses. Govt courses have fee 0 (registration only); Paid/Online use default fee (e.g. 5000 BDT).
+
+## Enrollment & Payment
+
+- **Govt project**: User fills registration form (name, phone, NID, address); enrollment is saved and appears in My Classes.
+- **Paid batch / Online batch**: User clicks “Pay & Enroll” → redirected to **SSLCommerz** (card, bKash, bank, etc.). On success, transaction is validated and course is added to My Classes.
+- Auth and enrollments are stored in **localStorage** (demo). For production, use a backend and database.
+
+## Environment (Payment)
+
+Copy `.env.example` to `.env.local` and set:
+
+- `NEXT_PUBLIC_APP_URL` – Your site URL (for payment callbacks).
+- `SSLCOMMERZ_STORE_ID`, `SSLCOMMERZ_STORE_PASS` – From [SSLCommerz Sandbox](https://developer.sslcommerz.com/registration/) or live signup.
+- `SSLCOMMERZ_IS_LIVE=false` for sandbox, `true` for production.

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { AuthProvider } from "@/context/AuthContext";
+import { EnrollmentProvider } from "@/context/EnrollmentContext";
 
 export const metadata: Metadata = {
   title: "Luminous - দক্ষতা অর্জনের সেরা ঠিকানা",
@@ -16,9 +18,13 @@ export default function RootLayout({
   return (
     <html lang="bn">
       <body className="min-h-screen flex flex-col antialiased">
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <EnrollmentProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </EnrollmentProvider>
+        </AuthProvider>
       </body>
     </html>
   );

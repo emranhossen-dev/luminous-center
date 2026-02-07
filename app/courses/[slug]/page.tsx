@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllCourses } from "@/app/data/courses";
+import CourseEnrollButton from "./CourseEnrollButton";
 
 export async function generateStaticParams() {
   const courses = getAllCourses();
@@ -27,13 +28,13 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
             <p className="text-gray-600">
               এই কোর্সে আপনি হাতে-কলমে শিখবেন এবং প্রজেক্ট ভিত্তিক দক্ষতা অর্জন করবেন। রেজিস্ট্রেশন করতে লগইন বা সাইন আপ করুন।
             </p>
+            {course.project !== "govt" && (
+              <p className="text-gray-600 mt-2">
+                কোর্স ফি: <strong>৳{course.fee.toLocaleString()} BDT</strong>
+              </p>
+            )}
             <div className="mt-8 flex gap-4">
-              <Link
-                href="/signup"
-                className="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition"
-              >
-                এনরোল করুন
-              </Link>
+              <CourseEnrollButton course={course} />
               <Link
                 href="/contact"
                 className="bg-gray-100 text-gray-800 font-semibold py-3 px-6 rounded-lg hover:bg-gray-200 transition"

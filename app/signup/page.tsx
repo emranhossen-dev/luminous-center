@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -10,6 +12,22 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/my-classes";
+  const { login } = useAuth();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword || !agreeTerms) return;
+    const user = {
+      id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+      name: name.trim() || email.split("@")[0],
+      email: email.trim(),
+    };
+    login(user);
+    router.push(returnUrl);
+  };
 
   return (
     <main className="flex-grow pt-16 min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 flex items-center justify-center px-4 py-12">
@@ -19,10 +37,7 @@ export default function SignupPage() {
             <h1 className="text-2xl font-bold text-white mb-1">রেজিস্ট্রেশন</h1>
             <p className="text-indigo-100 text-sm">নতুন অ্যাকাউন্ট তৈরি করুন</p>
           </div>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="p-8 space-y-5"
-          >
+          <form onSubmit={handleSubmit} className="p-8 space-y-5">
             <div>
               <label htmlFor="signup-name" className="block text-sm font-medium text-gray-700 mb-1.5">
                 নাম

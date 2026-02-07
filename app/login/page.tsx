@@ -2,11 +2,35 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/my-classes";
+
+  const { login } = useAuth();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (!email.trim()) {
+      setError("ইমেইল দিন");
+      return;
+    }
+    const user = {
+      id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+      name: email.split("@")[0],
+      email: email.trim(),
+    };
+    login(user);
+    router.push(returnUrl);
+  };
 
   return (
     <main className="flex-grow pt-16 min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 flex items-center justify-center px-4 py-12">
@@ -16,10 +40,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-white mb-1">লগইন</h1>
             <p className="text-indigo-100 text-sm">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
           </div>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="p-8 space-y-5"
-          >
+          <form onSubmit={handleSubmit} className="p-8 space-y-5">
             <div>
               <label htmlFor="login-email" className="block text-sm font-medium text-gray-700 mb-1.5">
                 ইমেইল
@@ -74,6 +95,7 @@ export default function LoginPage() {
                 </Link>
               </div>
             </div>
+            {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition shadow-md hover:shadow-lg"

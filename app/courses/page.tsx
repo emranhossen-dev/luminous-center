@@ -98,6 +98,13 @@ export default function CoursesPage() {
                     href={`/courses/${course.slug}`}
                     className="block bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-gray-100"
                   >
+                    <div className="aspect-video w-full overflow-hidden bg-gray-100">
+                      <img
+                        src={course.image}
+                        alt={course.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
                     <div className="p-6">
                       <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-700 mb-3">
                         {course.projectLabel}

@@ -82,28 +82,37 @@ export default function MyClassesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {enrollments.map((e) => (
-              <div
-                key={e.courseSlug}
-                className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                <div className="p-6">
-                  <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-700 mb-3">
-                    {e.projectLabel}
-                  </span>
-                  <h2 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">{e.courseTitle}</h2>
-                  <p className="text-xs text-gray-500 mb-4">
-                    এনরোল: {new Date(e.enrolledAt).toLocaleDateString("bn-BD")} • {e.method === "govt" ? "রেজিস্ট্রেশন" : "পেমেন্ট"}
-                  </p>
-                  <Link
-                    href={`/courses/${e.courseSlug}`}
-                    className="inline-block text-indigo-600 font-semibold text-sm hover:underline"
-                  >
-                    কোর্স বিস্তারিত →
-                  </Link>
+            {enrollments.map((e) => {
+              const course = getAllCourses().find((c) => c.slug === e.courseSlug);
+              const image = course?.image;
+              return (
+                <div
+                  key={e.courseSlug}
+                  className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  {image ? (
+                    <div className="aspect-video w-full overflow-hidden bg-gray-100">
+                      <img src={image} alt={e.courseTitle} className="h-full w-full object-cover" />
+                    </div>
+                  ) : null}
+                  <div className="p-6">
+                    <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-700 mb-3">
+                      {e.projectLabel}
+                    </span>
+                    <h2 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">{e.courseTitle}</h2>
+                    <p className="text-xs text-gray-500 mb-4">
+                      এনরোল: {new Date(e.enrolledAt).toLocaleDateString("bn-BD")} • {e.method === "govt" ? "রেজিস্ট্রেশন" : "পেমেন্ট"}
+                    </p>
+                    <Link
+                      href={`/my-classes/${e.courseSlug}`}
+                      className="inline-block text-indigo-600 font-semibold text-sm hover:underline"
+                    >
+                      ক্লাসে যান (ভিডিও ও হোমওয়ার্ক) →
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

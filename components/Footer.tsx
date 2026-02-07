@@ -38,6 +38,13 @@ export default function Footer() {
                 {label}
               </Link>
             ))}
+            <Link
+              href="/admin"
+              className="text-sm font-medium text-gray-500 hover:text-white transition-colors duration-300"
+              title="Admin dashboard (login required)"
+            >
+              Admin
+            </Link>
           </nav>
 
           {/* Social - Right */}

@@ -57,6 +57,7 @@ export function EnrollmentProvider({ children }: { children: React.ReactNode }) 
   const addEnrollment = useCallback(
     (record: Omit<EnrollmentRecord, "enrolledAt">) => {
       if (!user) return;
+      const enrolledAt = new Date().toISOString();
       setData((prev) => {
         const next = { ...prev };
         next[user.id] = { ...(next[user.id] || {}) };
@@ -64,13 +65,28 @@ export function EnrollmentProvider({ children }: { children: React.ReactNode }) 
           courseId: record.courseId,
           courseTitle: record.courseTitle,
           projectLabel: record.projectLabel,
-          enrolledAt: new Date().toISOString(),
+          enrolledAt,
           method: record.method,
           tranId: record.tranId,
         };
         saveEnrollments(next);
         return next;
       });
+      fetch("/api/enrollments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user.id,
+          user_name: user.name,
+          user_email: user.email,
+          course_slug: record.courseSlug,
+          course_title: record.courseTitle,
+          project_label: record.projectLabel,
+          method: record.method,
+          tran_id: record.tranId,
+          enrolled_at: enrolledAt,
+        }),
+      }).catch(() => {});
     },
     [user]
   );
